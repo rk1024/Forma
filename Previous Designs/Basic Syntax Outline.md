@@ -1,7 +1,31 @@
 MetaForma (to back these up)
 ```
+import StandardComm as sc;
+
+let Signature = metastruct();
+let Statement = metastruct();
+
+let MetaIterable<A> = interface { 
+  next()->A;
+};
+
+
+let MetaIndexable<Content, Index> = metainterface {
+  at(Index i)->Content;
+};
+
+meta def function(signature s, slist statements) {
+};
+
+mutable constructor_interfaces = metadict;
+for (Any[] a in sc.types) {
+  metadict[a] = function(
 
 ```
+
+StandardBase (to back these up)
+```
+let string
 
 Raw Forma 
 ```
@@ -20,7 +44,7 @@ let main = function(main_signature, {
 });
 ```
 
-StandardBase
+Using StandardBase
 ```
 import io
 

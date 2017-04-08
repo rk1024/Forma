@@ -4,14 +4,14 @@ Along with interfaces, syntax extensions and powerful metaprogramming are a core
 ## Where Clauses
 Often when working with Forma's declaration syntax, lines can start to look very complicated. For example, take the interface defined earlier:
 ```
-let a = function(interface<A>((invert(A item),A)) myparam);
+let a = function( interface<A>( invert(A item)->A ) myparam);
 ``` 
 On first sight, the meaning is obscured due to the necessity of defining the interaface as the function restriction. Fortunately, using syntax extensions, we can pull this part out of the declaration
 ```
 let a = function(Invertible myparam) 
-  where Invertible = interface<A>((invert(A item), A));
+  where Invertible = interface<A>(invert(A item)->A);
 ```
-## Quickcheck Integration
+# Quickcheck Integration
 The testing framework that is currently all the rage is Quickcheck[https://hackage.haskell.org/package/QuickCheck]. 
 Using Quickcheck, it is possible to do property-based testing in a far more elegant way than using conventional means. 
 To use Quickcheck-style testing in Forma, we can use the power of syntax extensions to write
@@ -83,72 +83,3 @@ Operator | Function Call
 / | divide(Dividable d, Dividable d) 
 
 The interfaces `Addable`, `Subtractable`, `Multiplyable`, and `Dividable` are interfaces implemented in `Operator` that require the presence of each of these objects. 
-
-## Easy Conformance
-If we want to make sure that a `struct` succesfully conforms to an interface, we normally do
-```
-let NumberWrapper = struct(int my_value);
-
-...Function Implementation...
-
-
-assert(checkConforms(NumberWrapper, _MyInterface),
-       "NumberWrapper does not correctly conform to _FullArithmetic");
-```
-Since interfaces are such a crucial part of Forma, the `Easy Conformance` syntax extension allows us to use a much more concise syntax of 
-```
-let NumberWrapper = struct(int my_value) conforming _MyInterface;
-```
-
-## Fall-Through Conformance
-Take the example where we want to provide a simple wrapper around an already built type, such as the one below
-
-```
-let NumberWrapper = struct(int my_value);
-```
-
-Unfortunately, in order to get all of the nice behavior of addition, subtraction, etc. we must implement all of the necessary functions 
-
-```
-let add = function((NumberWrapper left, NumberWrapper right), {
-  return add(left.n1, left.n2);
-});
-let subtract = function((NumberWrapper left, NumberWrapper right), {
-  return subtract(left.n1, left.n2);
-});
-let multiply = function((NumberWrapper left, NumberWrapper right), {
-  return multiply(left.n1, left.n2);
-});
-let divide = function((NumberWrapper left, NumberWrapper right), {
-  return divide(left.n1, left.n2);
-});
-```
-
-This is a lot of work considering that we want to do no more than our member already conforms to.
-In order to get around this, we use *Fall-Through Conformance*. 
-*Fall-Through Conformance* allows us to use a far more concise syntax by essentially referring 
-all parts of an interface to a member of the struct. 
-For example, the above would become
-```
-let NumberWrapper = struct(int my_value)
-                        conforming _MyInterface
-                        through my_value;
-```
-The above simply makes all of the functions of `_MyInterface` fall-through to using `my_value`.
-
-## Ruby Blocks
-Because we need to make Jay happy.
-```
-let makeRequest = function((string url, function((string response)) callback), {
-  ...do requesty things...
-  let result = returnedByRequest();
-  callback(url, result);
-};
-
-makeRequest("http://www.google.com") (string url, string result) {
-  io.print("You have received a request from " + url);
-  io.print("Loading response...");
-  io.print("Your response is " + result);
-  io.print("Have a good day!");
-};
-```

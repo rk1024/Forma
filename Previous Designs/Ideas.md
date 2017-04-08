@@ -47,7 +47,6 @@ Interfaces are a crucial constant in Forma. There are two types of interfaces: i
 ```
 let MyInterface = interface<A>(invert(A item)->A);
 ```
-Anonymous interfaces are used for syntax convenience. Due to the importance of interfaces in Forma, there is a lambda-like syntax of single-use, unnamed inferfaces. 
 ```
 let a = function( interface<A>( invert(A item)->A ) invertable);
 ```
